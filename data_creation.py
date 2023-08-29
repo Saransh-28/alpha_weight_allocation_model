@@ -78,6 +78,13 @@ def apply_functions_and_sum(o ,h ,l , c , vwap ,v , r, function_list, function_d
         func_result = function_dict[func](o ,h ,l , c , vwap ,v , r)
         func_result.to_csv(f'data/alphas/{str(func)}.csv' , index=True)
         result_sum['A_'+str(i)] = func_result[comp]
+    result_sum['close'] = c[comp]
+    result_sum['open'] = o[comp]
+    result_sum['high'] = h[comp]
+    result_sum['low'] = l[comp]
+    result_sum['volume'] = np.log(v[comp])
+    result_sum['vwap'] = vwap[comp]
+    result_sum['returns'] = r[comp]
     return result_sum
 
 def natural_sort_key(s):
