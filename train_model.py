@@ -17,7 +17,7 @@ def train_test(model , name , X , y , test_size , frame_size):
     val_df = pd.DataFrame(columns=X.columns)
     for i in range(0 , len(X) , frame_size):
         if (len(X) - i) <= frame_size:
-            train_size = (len(X) - i)*(1-test_size)
+            train_size = int((len(X) - i)*(1-test_size))
             tempx = X.iloc[i:len(X) , 1:]
             tempy = y[i:len(X)]
         else:
@@ -51,6 +51,9 @@ def create_data(df):
     return df.drop(lis , axis=1) , df[lis]
 
 for comp in comp_list:
+    model_list = [i for i in dir(model) if ('mod' == i[:3] and (i[-1]) in [str(i) for i in range(10)])]
+    model_list = sorted(model_list, key=natural_sort_key)
+    model_dict = {str(function_name): getattr(model, function_name) for function_name in model_list if callable(getattr(model, function_name))}
     X , y = create_data(pd.read_csv('data/company/'+comp+'.csv'))
     for model in model_list:
         print(model)
