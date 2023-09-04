@@ -15,8 +15,6 @@ model_dict = {str(function_name): getattr(model, function_name) for function_nam
 def train_test(model , name , X , y , test_size , frame_size):
     train_size = int(frame_size*(1-test_size))
     val_df = pd.DataFrame(columns=X.columns)
-    print('\n\n\n')
-    print('In the function')
     for i in range(0 , len(X) , frame_size):
         if (len(X) - i) <= frame_size:
             train_size = (len(X) - i)*(1-test_size)
@@ -34,10 +32,11 @@ def train_test(model , name , X , y , test_size , frame_size):
         X_test = X_test.astype('float32') 
         y_test = y_test.astype('float32') 
         print('training the model')
-        model.fit(X_train , y_train, epochs=30 , verbose=1)
+        model.fit(X_train , y_train, epochs=30 , verbose=0)
         y_pred = pd.DataFrame(model.predict(X_test) , columns=y_test.columns)
         print(f'epoch {i+1} -> {model.evaluate(X_test , y_test)}')
         val_df = pd.concat([val_df , y_pred] , axis=1)
+    print('\nTraining done\n')
     val_df.to_csv(f'data/models/{name}_result.csv',index=False)
 
 comp_list = [i.split('.')[0] for i in os.listdir('data/company')]
