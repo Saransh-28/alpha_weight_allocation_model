@@ -55,6 +55,8 @@ def model2(in_len,out_len):
     m = (Dense(512, activation='tanh'))(m)
 
     t = tf.keras.layers.Concatenate(axis=-1)([x , m])
+    
+    #tanh used because it is better to be approximatly right than being precisely wrond
     t =(Dense(256, activation='tanh'))(t)
     f = (Dense(out_len, activation='softmax')) (t)
 

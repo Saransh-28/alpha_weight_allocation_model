@@ -15,8 +15,6 @@ model_dict = {str(function_name): getattr(model, function_name) for function_nam
 def train_test(model , name, comp , X , y , test_size , frame_size ):
     train_size = int(frame_size*(1-test_size))
     val_df = pd.DataFrame(columns=X.columns)
-    print('\n\n\n')
-    print('In the function')
     for i in range(0 , len(X) , frame_size):
         if (len(X) - i) <= frame_size:
             train_size = int((len(X) - i)*(1-test_size))
@@ -39,6 +37,7 @@ def train_test(model , name, comp , X , y , test_size , frame_size ):
         # print(f'epoch {i+1} -> {model.evaluate(X_test , y_test)}')
         val_df = pd.concat([val_df , y_pred] , axis=0)
     val_df.to_csv(f'./data/models/{comp}_{name}_result.csv',index=False)
+
 
 comp_list = [i.split('.')[0] for i in os.listdir('data/company')]
 
