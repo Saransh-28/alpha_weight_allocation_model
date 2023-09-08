@@ -14,7 +14,7 @@ model_dict = {str(function_name): getattr(model, function_name) for function_nam
 
 def train_test(model , name, comp , X , y , test_size , frame_size ):
     train_size = int(frame_size*(1-test_size))
-    val_df = pd.DataFrame(columns=X.columns)
+    val_df = pd.DataFrame(columns=y.columns)
     for i in range(0 , len(X) , frame_size):
         if (len(X) - i) <= frame_size:
             train_size = int((len(X) - i)*(1-test_size))
