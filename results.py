@@ -6,7 +6,7 @@ from prettytable import PrettyTable
 
 res_list = (os.listdir('data/models/'))
 
-headings = ['Company' , 'Buy and Hold' , 'Equal weights' , 'Using DL Model']
+headings = ['Company' , 'Model' , 'Buy and Hold' , 'Equal weights' , 'Using DL Model']
 values = []
 
 T = 100
@@ -46,9 +46,9 @@ for res in res_list:
     r_s_a , r_s_a_arr = calculate_returns(r_s_a , T/100)
     
     x = list(alphas['close'])
-    b_h = (x[-1] - x[0])/x[0]
+    b_h = (T/10)*(x[-1] - x[0])/x[0]
     
-    values.append([name , b_h  , r_s_a , r_s_a_w])
+    values.append([name , model_name , b_h  , r_s_a , r_s_a_w])
 
     plt.title(name + ' ' + model_name)
     plt.plot(r_s_a_arr)
