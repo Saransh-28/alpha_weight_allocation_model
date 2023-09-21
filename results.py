@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from prettytable import PrettyTable
 
 res_list = (os.listdir('data/models/'))
+res_list = res_list.sort()
 
 headings = ['Company' , 'Model' , 'Buy and Hold' , 'Equal weights' , 'Using DL Model']
 values = []
@@ -66,6 +67,7 @@ headings = ['Company' , 'Model' , 'Equal weights (testing period) ' , 'Using DL 
 values = []
 
 res_list1 = (os.listdir('data/model_test/'))
+res_list1 = res_list1.sort()
 for res in res_list1: 
     df = pd.read_csv('data/model_test/'+res)
     name = res.split('_')[0]
