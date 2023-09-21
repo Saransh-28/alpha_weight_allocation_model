@@ -12,12 +12,12 @@ values = []
 T = 100
 
 def calculate_returns(arr,  a):
-    prod = a
+    prod = 1
     res = []
     for i in arr:
         res.append((1+i)*prod)
         prod *= (1+i)
-    return prod , res
+    return a*prod , res
 
 for res in res_list:    
     weights = pd.read_csv('data/models/'+res)
@@ -33,7 +33,7 @@ for res in res_list:
     #  sum (weights*alpha)
     s_a_w = a_w.sum(axis=1)
     #  returns * sum (weights*alpha)
-    r_s_a_w = (s_a_w*alphas['returns'].shift(-1))[:-1]
+    r_s_a_w = (s_a_w*(alphas['returns'].shift(-1)))[:-1]
     r_s_a_w , r_s_a_w_arr = calculate_returns(r_s_a_w , T/10)
     
     
@@ -56,6 +56,29 @@ for res in res_list:
     plt.legend(['equal weight' , 'Using DL Model'])    
     plt.show()
 
+print('+'+'-'*28 + '-'*29 +'-'*27+'+')
+print('|'+' '*28 + 'Final Result on whole dataset' +' '*27 + '|')
+tab = PrettyTable(headings)
+tab.add_rows(values)
+print(tab)
+
+headings = ['Company' , 'Model' , 'Equal weights (testing period) ' , 'Using DL Model (testing period)']
+values = []
+
+res_list1 = (os.listdir('data/model_test/'))
+for res in res_list1: 
+    df = pd.read_csv('data/model_test/'+res)
+    name = res.split('_')[0]
+    model = res.split('_')[1]
+    df['weighted'] = df['weighted']*df['returns']
+    df['equal'] = df['equal']*df['returns']
+    weight_returns , weight_arr = calculate_returns(df['weighted'] , T/10)
+    equal_returns , equal_arr = calculate_returns(df['equal'] , T/100)
+    values.append([name, model , equal_returns , weight_returns])
+
+
+print('+-'+'-'*28 + '-'*29 +'-'*27+'-+')
+print('| '+' '*28 + '   Final Result on test set  ' +' '*27 + ' |')
 tab = PrettyTable(headings)
 tab.add_rows(values)
 print(tab)

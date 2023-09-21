@@ -16,6 +16,7 @@ model_dict = {str(function_name): getattr(model, function_name) for function_nam
 def train_test(model , name, comp , X , y , test_size , frame_size ):
     train_size = int(frame_size*(1-test_size))
     val_df = pd.DataFrame(columns=y.columns)
+    test_result = pd.DataFrame(columns=['weighted' , 'equal' , 'returns'])
     print()
     print('-'*30)
     print()
@@ -39,10 +40,29 @@ def train_test(model , name, comp , X , y , test_size , frame_size ):
         model.fit(X_train , y_train, epochs=30 , verbose=0)
         y_pred = pd.DataFrame(model.predict(tempx) , columns=y_test.columns)
         val_df = pd.concat([val_df , y_pred] , axis=0)
-        
+
+        y_pred1 = pd.DataFrame(model.predict(X_test) , columns=y_test.columns)
+        cols = [i[2:] for i in y_test.columns]
+        temp_equal = X_test[cols].sum(axis=1)
+        temp_returns = X_test['returns'].shift(-1)
+        temp_df = pd.DataFrame()
+        for i in y_test.columns:
+            temp_df[i[2:]] = y_pred1[i] * list(X_test[i[2:]])
+        temp_weight = temp_df.sum(axis=1)
+        df1 = pd.DataFrame({
+                'weighted': list(temp_weight) ,
+                'equal': list(temp_equal),
+                'returns':list(temp_returns)
+        })
+        df1.dropna(inplace=True)
+        test_result = test_result.append(df1,ignore_index=True)
+
+    
     print(f' COMPLETED THE TRAINING FOR {comp} ')
     val_df.to_csv(f'./data/models/{comp}_{name}_result.csv',index=False)
+    test_result.to_csv(f'./data/model_test/{comp}_{name}_result.csv',index=False)
     print(f' SAVED THE RESULTS TO ./data/models/{comp}_{name}_result.csv')
+    print(f' SAVED THE RESULTS TO ./data/model_test/{comp}_{name}_result.csv')
     print()
     print('-'*30)
 
