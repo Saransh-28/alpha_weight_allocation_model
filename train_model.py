@@ -38,10 +38,10 @@ def train_test(model , name, comp , X , y , test_size , frame_size ):
         X_test = X_test.astype('float32') 
         y_test = y_test.astype('float32') 
         model.fit(X_train , y_train, epochs=30 , verbose=0)
-        y_pred = pd.DataFrame(model.predict(tempx) , columns=y_test.columns)
+        y_pred = pd.DataFrame(model.predict(tempx , verbose=0) , columns=y_test.columns)
         val_df = pd.concat([val_df , y_pred] , axis=0)
 
-        y_pred1 = pd.DataFrame(model.predict(X_test) , columns=y_test.columns)
+        y_pred1 = pd.DataFrame(model.predict(X_test, verbose=0) , columns=y_test.columns)
         cols = [i[2:] for i in y_test.columns]
         temp_equal = X_test[cols].sum(axis=1)
         temp_returns = X_test['returns'].shift(-1)
@@ -87,11 +87,14 @@ def softmax(df):
 
 def create_data(df):
     lis = list(df.columns)
+    # get all the alpha values ( known data )
     lis = [i for i in lis if 'A_' in i]
     
     for i in lis:
         df['y_'+i] = df[i]*(df['returns'].shift(-1))
         df['y_'+i] = df['y_'+i].apply(lambda x: x if x > 0 else 0)
+        
+    # target variable column
     lis = ['y_'+i for i in lis]
     df.dropna(inplace=True)
     return df.drop(lis , axis=1) , softmax(df[lis])
@@ -103,8 +106,7 @@ model_dict = {str(function_name): getattr(model, function_name) for function_nam
 for comp in comp_list:
     X , y = create_data(pd.read_csv('data/company/'+comp+'.csv'))
     print(comp)
-    print(X.head())
-    print(y.head())
+    print('All the models - ')
     print(model_list)
     for model in model_list:
         print('*'*30)

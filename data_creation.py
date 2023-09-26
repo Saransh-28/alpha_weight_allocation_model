@@ -12,7 +12,7 @@ import yfinance as yf
 # DOWNLOAD ALL THE DATA 
 print('\nImport Done')
 start_date = '2013-01-01'
-end_date = '2020-07-12'
+# end_date = '2023-09-25'
 keys = ['TSLA' , 'GOOG' , 'META' , 'AAPL' , 'MSFT' , 'AMZN' , 'NVDA' , 'V' , 'ORCL' , 'CSCO']
 open = pd.DataFrame(columns=keys)
 high =pd.DataFrame(columns=keys)
@@ -26,7 +26,7 @@ print('\nLoading the data\n')
 for s in keys:
     temp = yf.download(s,
                         start_date,
-                        end_date)
+                        end_date=None)
     open[s] = temp['Open'].replace(np.nan ,0)
     high[s] = temp['High'].replace(np.nan ,0)
     low[s] = temp['Low'].replace(np.nan ,0)
