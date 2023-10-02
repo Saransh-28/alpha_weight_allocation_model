@@ -5,10 +5,8 @@ from tensorflow import keras as k
 from tensorflow.keras import *
 from tensorflow.keras.models import *
 from tensorflow.keras.layers import *
-import seaborn as sns
 import warnings
 idx= pd.IndexSlice
-sns.set_style('whitegrid')
 warnings.filterwarnings('ignore')
 
 
@@ -66,7 +64,62 @@ def model2(in_len,out_len):
 
 #model2 = get_model2()
 
+def model_42_1(in_len,out_len):
+
+    model = tf.keras.Sequential()
+    model.add(tf.keras.Input(shape=(in_len,)))
+    model.add(tf.keras.layers.Dense(1024, activation="selu"))
+    model.add(tf.keras.layers.BatchNormalization())
+    model.add(tf.keras.layers.Dense(512, activation="selu"))
+    model.add(tf.keras.layers.Dropout(0.2))
+    model.add(tf.keras.layers.Dense(256, activation="selu"))
+    model.add(tf.keras.layers.Dense(128, activation="selu"))
+    model.add(tf.keras.layers.Dense(64, activation="selu"))
+    model.add(tf.keras.layers.Dropout(0.2))
+    model.add(tf.keras.layers.Dense(32, activation="selu"))
+    model.add(tf.keras.layers.Dense(out_len,activation='softmax'))
+    model.compile(loss='categorical_crossentropy', optimizer='adamax', metrics=['accuracy'])
+    return model
+
 
 
 
     
+def model_42_2(in_len,out_len):
+
+    inp=(tf.keras.Input(shape=(in_len,)))
+
+    model2=(tf.keras.layers.Dense(512,activation="tanh"))(inp)
+    model2=(tf.keras.layers.Dense(256,activation="tanh"))(model2)
+    model2=(tf.keras.layers.Dense(128,activation="tanh"))(model2)
+    model2=(tf.keras.layers.Dense(64,activation="tanh"))(model2)
+    model2=(tf.keras.layers.Dense(128,activation="tanh"))(model2)
+    model2=(tf.keras.layers.Dense(256,activation="tanh"))(model2)
+    model2=(tf.keras.layers.Dense(512,activation="tanh"))(model2)
+
+
+    model1=(tf.keras.layers.Dense(1024, activation="selu"))(inp)
+    model1=(tf.keras.layers.BatchNormalization())(model1)
+    model1=(tf.keras.layers.Dense(512, activation="selu"))(model1)
+    model1=(tf.keras.layers.Dropout(0.2))(model1)
+    model1=(tf.keras.layers.Dense(256, activation="selu"))(model1)
+    model1=(tf.keras.layers.Dense(128, activation="selu"))(model1)
+    model1=(tf.keras.layers.Dense(64, activation="selu"))(model1)
+    model1=(tf.keras.layers.Dropout(0.2))(model1)
+    model1=(tf.keras.layers.Dense(32, activation="selu"))(model1)
+
+
+    model_comb=tf.keras.layers.Concatenate(axis=-1)([model1 , model2])
+    model_comb=(tf.keras.layers.Dense(64,activation="tanh"))(model_comb)
+    model_comb=(tf.keras.layers.Dense(32,activation="tanh"))(model_comb)
+    model_comb=(tf.keras.layers.Dense(16,activation="tanh"))(model_comb)
+
+
+    model_out=(tf.keras.layers.Dense(out_len,activation='softmax'))(model_comb)
+    model=tf.keras.Model(inputs=inp,outputs=model_out)
+    model.compile(loss='categorical_crossentropy', optimizer='nadam', metrics=['accuracy'])
+    return model
+
+
+model_42_1(17,10)
+model_42_2(17,10)
