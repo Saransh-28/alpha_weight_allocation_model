@@ -59,7 +59,7 @@ def model2(in_len,out_len):
     f = (Dense(out_len, activation='softmax')) (t)
 
     model = Model(inputs=x, outputs=f)
-    model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     return model
 
 #model2 = get_model2()

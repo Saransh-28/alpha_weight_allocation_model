@@ -8,7 +8,7 @@ def res():
     res_list = (os.listdir('data/models/'))
     res_list.sort()
 
-    headings = ['Company' , 'Model' , 'Buy and Hold' , 'Equal weights' , 'Using DL Model']
+    headings = ['Company' , 'Model' , 'Buy and Hold' , 'Equal weights' , 'Equal Weights Win Rate' , 'Using DL Model', 'DL Model Win Rate']
     values = []
 
     T = 100
@@ -20,7 +20,14 @@ def res():
             res.append((1+i)*prod)
             prod *= (1+i)
         return a*prod , res
-
+    
+    def calculate_win_rate(arr):
+        res = []
+        for i in range(0 , len(arr) , 30):
+            temp = arr[i:min(len(arr) , i+30)]
+            res.append(len([j for j in temp if j>0])/len(temp))
+        return sum(res)/len(res) , res
+    
     for res in res_list:    
         weights = pd.read_csv('data/models/'+res)
         name = res.split('_')[0]
@@ -36,6 +43,7 @@ def res():
         s_a_w = a_w.sum(axis=1)
         #  returns * sum (weights*alpha)
         r_s_a_w = (s_a_w*(alphas['returns'].shift(-1)))[:-1]
+        r_s_a_w_r , win_rate_arr1 =calculate_win_rate(r_s_a_w)
         r_s_a_w , r_s_a_w_arr = calculate_returns(r_s_a_w , T/10)
         
         
@@ -45,12 +53,13 @@ def res():
         s_a = alphas[alp].sum(axis=1)
         # returns * sum( alphas )
         r_s_a = (s_a*alphas['returns'].shift(-1))[:-1]
+        r_s_a_r , win_rate_arr2 = calculate_win_rate(r_s_a)
         r_s_a , r_s_a_arr = calculate_returns(r_s_a , T/100)
         
         x = list(alphas['close'])
         b_h = (T/10)*(x[-1] - x[0])/x[0]
         
-        values.append([name , model_name , b_h  , r_s_a , r_s_a_w])
+        values.append([name , model_name , b_h  , r_s_a, r_s_a_r , r_s_a_w, r_s_a_w_r])
 
         # plt.title(name + ' ' + model_name)
         # plt.plot(r_s_a_arr)
@@ -64,7 +73,7 @@ def res():
     tab.add_rows(values)
     print(tab)
 
-    headings = ['Company' , 'Model' , 'Equal weights (testing period) ' , 'Using DL Model (testing period)']
+    headings = ['Company' , 'Model' , 'Equal weights (testing period) ' ,'Equal Weights Win Rate' , 'Using DL Model (testing period)', 'DL Model Win Rate']
     values = []
 
     res_list1 = (os.listdir('data/model_test/'))
@@ -76,8 +85,10 @@ def res():
         df['weighted'] = df['weighted']*df['returns']
         df['equal'] = df['equal']*df['returns']
         weight_returns , weight_arr = calculate_returns(df['weighted'] , T/10)
+        weight_win_rate , win_rate_arr1=calculate_win_rate(df['weighted'])
         equal_returns , equal_arr = calculate_returns(df['equal'] , T/100)
-        values.append([name, model , equal_returns , weight_returns])
+        equal_win_rate , win_rate_arr2 =calculate_win_rate(df['equal'])
+        values.append([name, model , equal_returns, equal_win_rate , weight_returns, weight_win_rate])
 
 
     print('+-'+'-'*28 + '-'*29 +'-'*27+'-+')

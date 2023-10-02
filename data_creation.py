@@ -25,8 +25,7 @@ returns = pd.DataFrame(columns=keys)
 print('\nLoading the data\n')
 for s in keys:
     temp = yf.download(s,
-                        start_date,
-                        end_date=None)
+                        start_date)
     open[s] = temp['Open'].replace(np.nan ,0)
     high[s] = temp['High'].replace(np.nan ,0)
     low[s] = temp['Low'].replace(np.nan ,0)
@@ -39,11 +38,11 @@ print(' Printing the Stats\n')
 print('-'*20 + 'Data Shape' + '-'*20)
 
 open.fillna(0 , inplace=True)
-open.to_csv('data//base/open.csv', index=False)
+open.to_csv('./data/base/open.csv', index=False)
 print('open -' , open.shape)
 
 high.fillna(0 , inplace=True)
-high.to_csv('data/base/high.csv', index=False)
+high.to_csv('./data/base/high.csv', index=False)
 print('high -' , high.shape)
 
 low.fillna(0 , inplace=True)
@@ -100,6 +99,8 @@ print('\nCreating Company Data\n')
 for col in list(open.columns):
     name = col
     temp = apply_functions_and_sum(open , high , low , close , vwap , volume , returns, function_list ,function_dict ,col)
+    temp.replace(np.inf,0,inplace=True)
+    temp.replace(-np.inf,0,inplace=True)
     temp.dropna(inplace=True)
     temp.to_csv(f'data/company/{name}.csv',index=True)
     print(f'Company {name} created -> {temp.shape} ')
