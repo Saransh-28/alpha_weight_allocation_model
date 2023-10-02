@@ -8,7 +8,7 @@ def res():
     res_list = (os.listdir('data/models/'))
     res_list.sort()
 
-    headings = ['Company' , 'Model' , 'Buy and Hold' , 'Equal weights' , 'Equal Weights Win Rate' , 'Using DL Model', 'DL Model Win Rate']
+    headings = ['Company' , 'Model' , 'Buy and Hold' , 'Equal weights' , 'Using DL Model' , 'Equal Weights Win Rate', 'DL Model Win Rate']
     values = []
 
     T = 100
@@ -23,8 +23,8 @@ def res():
     
     def calculate_win_rate(arr):
         res = []
-        for i in range(0 , len(arr) , 30):
-            temp = arr[i:min(len(arr) , i+30)]
+        for i in range(0 , len(arr) , 15):
+            temp = arr[i:min(len(arr) , i+15)]
             res.append(len([j for j in temp if j>0])/len(temp))
         return sum(res)/len(res) , res
     
@@ -59,7 +59,8 @@ def res():
         x = list(alphas['close'])
         b_h = (T/10)*(x[-1] - x[0])/x[0]
         
-        values.append([name , model_name , b_h  , r_s_a, r_s_a_r , r_s_a_w, r_s_a_w_r])
+        values.append([name , model_name , b_h  , r_s_a , r_s_a_w, r_s_a_r, r_s_a_w_r])
+        values.append(['-','-','-','-','-','-','-'])
 
         # plt.title(name + ' ' + model_name)
         # plt.plot(r_s_a_arr)
@@ -73,7 +74,7 @@ def res():
     tab.add_rows(values)
     print(tab)
 
-    headings = ['Company' , 'Model' , 'Equal weights (testing period) ' ,'Equal Weights Win Rate' , 'Using DL Model (testing period)', 'DL Model Win Rate']
+    headings = ['Company' , 'Model' , 'Equal weights (testing period) ' , 'Using DL Model (testing period)','Equal Weights Win Rate', 'DL Model Win Rate']
     values = []
 
     res_list1 = (os.listdir('data/model_test/'))
@@ -88,7 +89,8 @@ def res():
         weight_win_rate , win_rate_arr1=calculate_win_rate(df['weighted'])
         equal_returns , equal_arr = calculate_returns(df['equal'] , T/100)
         equal_win_rate , win_rate_arr2 =calculate_win_rate(df['equal'])
-        values.append([name, model , equal_returns, equal_win_rate , weight_returns, weight_win_rate])
+        values.append([name, model , equal_returns , weight_returns, equal_win_rate, weight_win_rate])
+        values.append(['-','-','-','-','-','-'])
 
 
     print('+-'+'-'*28 + '-'*29 +'-'*27+'-+')

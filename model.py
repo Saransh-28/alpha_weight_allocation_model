@@ -64,7 +64,7 @@ def model2(in_len,out_len):
 
 #model2 = get_model2()
 
-def model_42_1(in_len,out_len):
+def model3(in_len,out_len):
 
     model = tf.keras.Sequential()
     model.add(tf.keras.Input(shape=(in_len,)))
@@ -82,10 +82,7 @@ def model_42_1(in_len,out_len):
     return model
 
 
-
-
-    
-def model_42_2(in_len,out_len):
+def model4(in_len,out_len):
 
     inp=(tf.keras.Input(shape=(in_len,)))
 
@@ -120,6 +117,3 @@ def model_42_2(in_len,out_len):
     model.compile(loss='categorical_crossentropy', optimizer='nadam', metrics=['accuracy'])
     return model
 
-
-model_42_1(17,10)
-model_42_2(17,10)
