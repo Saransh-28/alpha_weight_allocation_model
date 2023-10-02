@@ -20,8 +20,13 @@ def res():
             res.append((1+i)*prod)
             prod *= (1+i)
         return a*prod , res
+    
     def calculate_win_rate(arr):
-        return len([i for i in arr if i>0])/len(arr)
+        res = []
+        for i in range(0 , len(arr) , 30):
+            temp = arr[i:min(len(arr) , i+30)]
+            res.append(len([j for j in temp if j>0])/len(temp))
+        return sum(res)/len(res) , res
     
     for res in res_list:    
         weights = pd.read_csv('data/models/'+res)
@@ -38,7 +43,7 @@ def res():
         s_a_w = a_w.sum(axis=1)
         #  returns * sum (weights*alpha)
         r_s_a_w = (s_a_w*(alphas['returns'].shift(-1)))[:-1]
-        r_s_a_w_r=calculate_win_rate(r_s_a_w)
+        r_s_a_w_r , win_rate_arr1 =calculate_win_rate(r_s_a_w)
         r_s_a_w , r_s_a_w_arr = calculate_returns(r_s_a_w , T/10)
         
         
@@ -48,7 +53,7 @@ def res():
         s_a = alphas[alp].sum(axis=1)
         # returns * sum( alphas )
         r_s_a = (s_a*alphas['returns'].shift(-1))[:-1]
-        r_s_a_r=calculate_win_rate(r_s_a)
+        r_s_a_r , win_rate_arr2 = calculate_win_rate(r_s_a)
         r_s_a , r_s_a_arr = calculate_returns(r_s_a , T/100)
         
         x = list(alphas['close'])
@@ -80,9 +85,9 @@ def res():
         df['weighted'] = df['weighted']*df['returns']
         df['equal'] = df['equal']*df['returns']
         weight_returns , weight_arr = calculate_returns(df['weighted'] , T/10)
-        weight_win_rate=calculate_win_rate(df['weighted'])
+        weight_win_rate , win_rate_arr1=calculate_win_rate(df['weighted'])
         equal_returns , equal_arr = calculate_returns(df['equal'] , T/100)
-        equal_win_rate=calculate_win_rate(df['equal'])
+        equal_win_rate , win_rate_arr2 =calculate_win_rate(df['equal'])
         values.append([name, model , equal_returns, equal_win_rate , weight_returns, weight_win_rate])
 
 
