@@ -117,3 +117,41 @@ def model4(in_len,out_len):
     model.compile(loss='categorical_crossentropy', optimizer='nadam', metrics=['accuracy'])
     return model
 
+
+def model_13_1(in_len, out_len):
+    x = Input(( in_len ,))
+    m = (Dense(1024, activation='relu')) (x)
+    m = (Dropout(0.2))(m)
+    m =(Dense(512, activation='relu'))(m)
+    m = (Dropout(0.2))(m)
+    m =(Dense(64, activation='relu', activity_regularizer=tf.keras.regularizers.l1(10e-5))) (m)
+    m = (Dropout(0.2))(m)
+    m =(Dense(128, activation='relu')) (m)
+    m =(Dense(256, activation='relu'))(m)
+    m =(Dense(512, activation='relu'))(m)
+    m = (Dense(1024, activation='relu'))(m)
+
+    m = (Dense(out_len, activation='softmax')) (m)
+
+    model = Model(inputs=x, outputs=m)
+    model.compile(loss='categorical_crossentropy', optimizer='adafactor', metrics=['accuracy'])
+    return model
+
+def model_13_2(in_len,out_len):
+    
+    model = tf.keras.Sequential()
+    model.add(tf.keras.Input(shape=(in_len,)))
+    model.add(tf.keras.layers.Dense(256, activation="elu", kernel_initializer=tf.keras.initializers.RandomNormal(stddev=0.01)))
+    model.add(tf.keras.layers.Dropout(0.2))
+    model.add(tf.keras.layers.Dense(128, activation="elu"))
+    model.add(tf.keras.layers.Dense(64, activation="elu"))
+    model.add(tf.keras.layers.BatchNormalization())
+    model.add(tf.keras.layers.Dense(32, activation="elu"))
+    model.add(tf.keras.layers.Dropout(0.2))
+    model.add(tf.keras.layers.Dense(16, activation="elu"))
+    model.add(tf.keras.layers.Dense(out_len,activation='softmax'))
+    model.compile(loss='categorical_crossentropy', optimizer='adamax', metrics=['accuracy'])
+    return model
+
+
+
