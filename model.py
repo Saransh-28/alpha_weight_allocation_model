@@ -153,5 +153,54 @@ def model_13_2(in_len,out_len):
     model.compile(loss='categorical_crossentropy', optimizer='adamax', metrics=['accuracy'])
     return model
 
+def model5(in_len,out_len):
+
+    # Creating a Sequential model
+    model = tf.keras.Sequential()
+    # Adding the input layer
+
+    model.add(tf.keras.Input(shape=(in_len,)))
+    model.add(layers.Dense(1024, activation="selu")) #scaled exponential linear unit
+    model.add(layers.BatchNormalization())
+    model.add(layers.Dense(512, activation="selu"))
+    model.add(layers.Dropout(0.2))
+    model.add(layers.Dense(256, activation="selu"))
+    model.add(layers.Dense(128, activation="selu"))
+    model.add(layers.Dense(64, activation="selu"))
+    model.add(layers.Dropout(0.2))
+    model.add(layers.Dense(32, activation="selu"))
+    # Output layer
+    model.add(layers.Dense(out_len, activation='softmax'))
+    # Compile the model
+    model.compile(loss='categorical_crossentropy', optimizer='adamax', metrics=['accuracy'])
+    return model
+
+
+def model6(in_len, out_len):
+    model = Sequential()
+    model.add(tf.keras.Input(shape=(in_len,)))
+    # Hidden layers
+    model.add(layers.Dense(1024, activation="relu"))  # ReLU activation
+    model.add(layers.BatchNormalization())
+    model.add(layers.Dense(512, activation="tanh"))  # Hyperbolic Tangent (tanh) activation
+    model.add(layers.Dropout(0.3))  # Dropout layer
+    model.add(layers.Dense(256, activation="elu"))  # Exponential Linear Unit (ELU) activation
+    model.add(layers.BatchNormalization())
+    model.add(layers.Dense(128, activation="relu"))
+    model.add(layers.Dropout(0.3))
+    model.add(layers.Dense(64, activation="tanh"))
+    model.add(layers.Dense(32, activation="leaky_relu"))  # Leaky ReLU activation
+    model.add(layers.BatchNormalization())
+    model.add(layers.Dense(16, activation="sigmoid"))  # Sigmoid activation
+    model.add(layers.Dropout(0.3))
+    # Additional layers
+    model.add(layers.Dense(8, activation="softplus"))  # Softplus activation
+    model.add(layers.BatchNormalization())
+    # Output layer
+    model.add(layers.Dense(out_len, activation='softmax'))
+    # Compile the model
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+    return model
+
 
 
